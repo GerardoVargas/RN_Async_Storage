@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -14,10 +14,25 @@ import AsyncStorage from '@react-native-community/async-storage'
 const App = () => {
 
   const [inputTexto, guardarInputTexto] = useState('')
+  const [nombreStorage, guardarNombreStorage] = useState('')
+
+  useEffect( () => {
+    obtenerDatosStorage()
+  }, [])
 
   const guardarDatos = async () => {
     try{
-      await AsyncStorage.setItem('nombre')
+      await AsyncStorage.setItem('nombre', inputTexto)
+      guardarNombreStorage(inputTexto)
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  const obtenerDatosStorage = async () => {
+    try{
+      const nombre = await AsyncStorage.getItem('nombre')
+      guardarNombreStorage(nombre)
     } catch(error) {
       console.log(error)
     }
@@ -26,6 +41,9 @@ const App = () => {
   return (
     <>
       <View style={styles.contenedor}>
+
+        <Text>{`Hola ${nombreStorage}`}</Text>
+
         <TextInput 
           style={styles.input} 
           placeholder='Escribe tu nombre'
